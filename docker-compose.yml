@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # SearXNG Meta-Search Engine
   searxng:
@@ -74,6 +72,28 @@ services:
         reservations:
           cpus: '0.5'
           memory: 1G
+
+  # Proxy Service with LLM compression
+  proxy:
+    build:
+      context: ./proxy-service
+      dockerfile: Dockerfile
+    container_name: search-proxy
+    ports:
+      - "8001:8001"
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+      - CRAWL4AI_URL=http://crawl4ai:8000
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-flash-1.5-8b}
+    restart: unless-stopped
+    networks:
+      - search-network
+    depends_on:
+      searxng:
+        condition: service_healthy
+      crawl4ai:
+        condition: service_started
 
 networks:
   search-network:
