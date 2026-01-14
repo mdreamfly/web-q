@@ -1,8 +1,8 @@
 # Claude Search Skill
 
-[![GitHub stars](https://img.shields.io/github/stars/danwt/sketch-claude-search-skill?style=flat-square)](https://github.com/danwt/sketch-claude-search-skill/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/danwt/sketch-claude-search-skill?style=flat-square)](https://github.com/danwt/sketch-claude-search-skill/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/danwt/sketch-claude-search-skill?style=flat-square)](https://github.com/danwt/sketch-claude-search-skill/issues)
+[![GitHub stars](https://img.shields.io/github/stars/danwt/claude-search-skill?style=flat-square)](https://github.com/danwt/claude-search-skill/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/danwt/claude-search-skill?style=flat-square)](https://github.com/danwt/claude-search-skill/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/danwt/claude-search-skill?style=flat-square)](https://github.com/danwt/claude-search-skill/issues)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?style=flat-square&logo=docker)](https://www.docker.com/)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-skill-blueviolet?style=flat-square)](https://claude.ai/claude-code)
@@ -23,8 +23,8 @@ A local Docker stack that gives Claude Code powerful web search and scraping cap
 
 ```bash
 # Clone
-git clone https://github.com/danwt/sketch-claude-search-skill.git
-cd sketch-claude-search-skill
+git clone https://github.com/danwt/claude-search-skill.git
+cd claude-search-skill
 
 # Configure (optional - only needed for compression)
 cp .env.example .env
