@@ -5,7 +5,9 @@ with optional response compression via OpenRouter.
 
 import os
 import json
+import asyncio
 import logging
+import time
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query
@@ -76,7 +78,7 @@ async def search(
     format: str = Query("json", description="Response format"),
     categories: Optional[str] = Query(None, description="Search categories"),
     engines: Optional[str] = Query(None, description="Specific engines"),
-    language: str = Query("en", description="Search language"),
+    language: str = Query("auto", description="Search language (auto-detect by default)"),
     pageno: int = Query(1, description="Page number"),
     time_range: Optional[str] = Query(None, description="Time filter"),
 ):
@@ -97,8 +99,11 @@ async def search(
 
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
+            t_start = time.monotonic()
             response = await client.get(f"{SEARXNG_URL}/search", params=params)
             response.raise_for_status()
+            t_search = time.monotonic() - t_start
+            logger.info(f"SearXNG search completed in {t_search:.2f}s")
         except httpx.HTTPError as e:
             logger.error(f"SearXNG request failed: {e}")
             raise HTTPException(status_code=502, detail=f"SearXNG request failed: {e}")
@@ -107,9 +112,22 @@ async def search(
 
     if compress_response and data.get("results"):
         logger.info(f"Compressing search results with instruction: {instruction}")
+        # Only keep useful fields and limit to top 10 results
+        results = data["results"][:10]
+        slim_results = [
+            {k: r.get(k, "") for k in ("title", "url", "content")}
+            for r in results
+        ]
+        # Use compact JSON (no indent) to minimize tokens
+        raw_content = json.dumps(slim_results, ensure_ascii=False, separators=(',', ':'))
+        logger.info(f"Sending {len(slim_results)} results to LLM ({len(raw_content)} chars)")
+
         try:
-            raw_content = json.dumps(data["results"], indent=2)
+            t_start = time.monotonic()
             compressed = await compress(raw_content, instruction)
+            t_llm = time.monotonic() - t_start
+            logger.info(f"LLM compression completed in {t_llm:.2f}s")
+
             return JSONResponse({
                 "query": data.get("query"),
                 "compressed": True,
@@ -117,9 +135,25 @@ async def search(
                 "result": compressed,
                 "original_result_count": len(data.get("results", [])),
             })
+        except asyncio.TimeoutError:
+            logger.warning("LLM compression timed out (>15s), returning slim results")
+            return JSONResponse({
+                "query": data.get("query"),
+                "compressed": False,
+                "timeout": True,
+                "note": "LLM compression timed out, returning raw results",
+                "results": slim_results,
+                "original_result_count": len(data.get("results", [])),
+            })
         except Exception as e:
-            logger.error(f"Compression failed: {e}")
-            raise HTTPException(status_code=500, detail=f"Compression failed: {e}")
+            logger.error(f"Compression failed: {e}, returning slim results")
+            return JSONResponse({
+                "query": data.get("query"),
+                "compressed": False,
+                "error": str(e),
+                "results": slim_results,
+                "original_result_count": len(data.get("results", [])),
+            })
 
     return JSONResponse(data)
 

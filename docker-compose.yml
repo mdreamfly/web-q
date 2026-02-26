@@ -84,8 +84,20 @@ services:
     environment:
       - SEARXNG_URL=http://searxng:8080
       - CRAWL4AI_URL=http://crawl4ai:8000
+      # LLM Provider: "openai", "openrouter", or "custom"
+      - LLM_PROVIDER=${LLM_PROVIDER:-openrouter}
+      # OpenRouter settings
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
-      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-flash-1.5-8b}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-lite-001}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      # OpenAI settings
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      # Custom provider settings (any OpenAI-compatible API)
+      - CUSTOM_API_KEY=${CUSTOM_API_KEY:-}
+      - CUSTOM_MODEL=${CUSTOM_MODEL:-}
+      - CUSTOM_BASE_URL=${CUSTOM_BASE_URL:-}
     restart: unless-stopped
     networks:
       - search-network

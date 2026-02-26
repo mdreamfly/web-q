@@ -142,24 +142,60 @@ Claude will use the compression instruction to control how detailed the response
 
 ## Configuration
 
+### LLM Provider
+
+The compression layer supports multiple LLM providers. Set `LLM_PROVIDER` in your `.env` file:
+
+#### OpenRouter (default)
+
+```env
+LLM_PROVIDER=openrouter
+OPENROUTER_API_KEY=your-key
+OPENROUTER_MODEL=google/gemini-2.0-flash-lite-001
+```
+
+#### OpenAI
+
+```env
+LLM_PROVIDER=openai
+OPENAI_API_KEY=sk-your-key
+OPENAI_MODEL=gpt-4o-mini
+```
+
+#### Custom (any OpenAI-compatible API)
+
+```env
+LLM_PROVIDER=custom
+CUSTOM_API_KEY=your-key
+CUSTOM_MODEL=your-model
+CUSTOM_BASE_URL=http://host.docker.internal:11434/v1  # e.g. Ollama
+```
+
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `OPENROUTER_API_KEY` | - | Required for compression |
-| `OPENROUTER_MODEL` | `google/gemini-2.0-flash-lite-001` | Compression model |
+| `LLM_PROVIDER` | `openrouter` | LLM provider: `openai`, `openrouter`, or `custom` |
+| `OPENROUTER_API_KEY` | - | API key for OpenRouter |
+| `OPENROUTER_MODEL` | `google/gemini-2.0-flash-lite-001` | OpenRouter model |
+| `OPENAI_API_KEY` | - | API key for OpenAI |
+| `OPENAI_MODEL` | `gpt-4o-mini` | OpenAI model |
+| `OPENAI_BASE_URL` | `https://api.openai.com/v1` | OpenAI API base URL |
+| `CUSTOM_API_KEY` | - | API key for custom provider |
+| `CUSTOM_MODEL` | - | Custom provider model |
+| `CUSTOM_BASE_URL` | - | Custom provider base URL |
 | `COMPRESSION_PROMPT` | (see .env.example) | System prompt for compression |
 | `SEARXNG_SECRET` | - | SearXNG secret key |
 
 ### Recommended Models for Compression
 
-| Model | Cost (per 1M tokens) | Notes |
-|-------|---------------------|-------|
-| `google/gemini-2.0-flash-lite-001` | $0.075 in / $0.30 out | Best value |
-| `google/gemini-2.0-flash-001` | $0.10 in / $0.40 out | Slightly smarter |
-| `google/gemini-2.0-flash-exp:free` | Free (rate limited) | Testing only |
-
-At ~$0.0024 per compression, you can do **~400 compressions per dollar**.
+| Provider | Model | Cost (per 1M tokens) | Notes |
+|----------|-------|---------------------|-------|
+| OpenRouter | `google/gemini-2.0-flash-lite-001` | $0.075 in / $0.30 out | Best value |
+| OpenRouter | `google/gemini-2.0-flash-001` | $0.10 in / $0.40 out | Slightly smarter |
+| OpenAI | `gpt-4o-mini` | $0.15 in / $0.60 out | Fast and capable |
+| OpenAI | `gpt-4o` | $2.50 in / $10.00 out | Most capable |
+| Custom | Ollama `llama3.2` | Free (local) | Privacy-first, no API cost |
 
 ## Services
 

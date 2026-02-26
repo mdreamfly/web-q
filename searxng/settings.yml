@@ -3,7 +3,7 @@ use_default_settings: true
 server:
   limiter: false
   public_instance: false
-  secret_key: "your_secret_key_here"  # generate with openssl rand -hex 32
+  secret_key: "f6dc032038feba5fdad382b52db40e97a76831bc586d9789c929997668c71ddf"  # generate with openssl rand -hex 32
   bind_address: "0.0.0.0"
   port: 8080
 
@@ -11,3 +11,48 @@ search:
   formats:
     - html
     - json  # for MCP/API clients
+  default_lang: "zh-CN"
+
+# Ensure proper encoding for CJK content
+outgoing:
+  request_timeout: 10.0
+  useragent_suffix: ""
+
+engines:
+  - name: google
+    engine: google
+    shortcut: g
+    use_mobile_ui: false
+    proxies:
+        http:
+	    - socks5://192.168.5.254:23456
+        https:
+   	    - socks5://192.168.5.254:23456
+
+  - name: bing
+    engine: bing
+    shortcut: b
+
+  - name: brave
+    engine: brave
+    shortcut: br
+
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+    region: "zh-CN"
+    proxies:
+        http:
+	    - socks5://192.168.5.254:23456
+        https:
+   	    - socks5://192.168.5.254:23456
+
+  - name: duckduckgo-lite
+    engine: duckduckgo
+    shortcut: ddg
+    url: https://lite.duckduckgo.com/lite/
+    timeout: 15.0
+
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: wp
