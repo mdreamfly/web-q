@@ -42,10 +42,22 @@ curl -s --noproxy '*' "http://localhost:8001/search?q=QUERY&format=json" | jq '.
 | `compress` | `false` | Set to `true` to have LLM summarize results |
 | `instruction` | `summarize briefly` | Natural language instruction for LLM compression |
 | `language` | `auto` | Search language. Use `zh-CN` for Chinese queries |
-| `categories` | (all) | Filter: `images`, `news`, `videos`, `science`, `files`, `it` |
-| `engines` | (all) | Specific engines to use |
+| `categories` | (all) | Filter: `general`, `images`, `news`, `videos`, `music`, `map`, `it`, `science`, `files`, `social media` |
+| `engines` | (all) | Specific engines (comma-separated). See Available Engines below |
 | `pageno` | `1` | Page number |
 | `time_range` | (none) | Time filter: `day`, `week`, `month`, `year` |
+
+### Available Engines
+
+| Category | Engines |
+|---|---|
+| General (Web) | `google`, `bing`, `duckduckgo`, `brave`, `startpage` |
+| General (中文) | `baidu`, `sogou`, `360search`, `quark` |
+| General (其他) | `wikipedia`, `wikidata`, `currency`, `dictzone` |
+| Images | `google images`, `bing images`, `duckduckgo images`, `baidu images`, `sogou images`, `quark images`, `flickr`, `unsplash`, `pinterest` |
+| Videos | `google videos`, `bing videos`, `duckduckgo videos`, `youtube`, `dailymotion`, `bilibili`, `acfun`, `iqiyi`, `sogou videos`, `vimeo`, `sepiasearch` |
+| News | `google news`, `bing news`, `duckduckgo news`, `brave.news`, `yahoo news`, `wikinews`, `sogou wechat`, `reuters` |
+| IT | `github`, `stackoverflow`, `docker hub`, `pypi`, `npm`, `mdn`, `arch linux wiki`, `mankier`, `baidu kaifa` |
 
 ### Response Format
 
@@ -107,8 +119,20 @@ curl -s --noproxy '*' "http://localhost:8001/search?q=weather+london&format=json
 # Page 2 of results
 curl -s --noproxy '*' "http://localhost:8001/search?q=query&format=json&pageno=2" | jq '.results'
 
-# Search specific category (images, news, videos, science, files, it)
+# Search specific category (general, images, news, videos, music, it, science, files)
 curl -s --noproxy '*' "http://localhost:8001/search?q=query&format=json&categories=news" | jq '.results'
+
+# Search specific engine(s)
+curl -s --noproxy '*' "http://localhost:8001/search?q=query&format=json&engines=google,bing" | jq '.results'
+
+# 中文视频搜索 (bilibili, acfun, iqiyi)
+curl -s --noproxy '*' "http://localhost:8001/search?q=%E7%BC%96%E7%A8%8B%E6%95%99%E7%A8%8B&format=json&categories=videos&language=zh-CN" | jq '.results'
+
+# 微信公众号文章搜索 (sogou wechat)
+curl -s --noproxy '*' "http://localhost:8001/search?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD&format=json&engines=sogou+wechat&language=zh-CN" | jq '.results'
+
+# IT 技术搜索 (github, stackoverflow, pypi)
+curl -s --noproxy '*' "http://localhost:8001/search?q=fastapi+websocket&format=json&categories=it" | jq '.results'
 
 # Time filter (day, week, month, year)
 curl -s --noproxy '*' "http://localhost:8001/search?q=query&format=json&time_range=week" | jq '.results'

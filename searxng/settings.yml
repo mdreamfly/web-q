@@ -1,58 +1,446 @@
 use_default_settings: true
 
+general:
+  instance_name: "SearXNG - 中文搜索"
+
 server:
   limiter: false
   public_instance: false
-  secret_key: "f6dc032038feba5fdad382b52db40e97a76831bc586d9789c929997668c71ddf"  # generate with openssl rand -hex 32
+  secret_key: "f6dc032038feba5fdad382b52db40e97a76831bc586d9789c929997668c71ddf"
   bind_address: "0.0.0.0"
   port: 8080
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1
 
 search:
+  safe_search: 0
+  default_lang: "zh-CN"
   formats:
     - html
-    - json  # for MCP/API clients
-  default_lang: "zh-CN"
+    - json
+  results_on_page: 20
+  max_page: 0
 
-# Ensure proper encoding for CJK content
+ui:
+  default_theme: "simple"
+  theme_args:
+    simple_style: "auto"
+  center_alignment: true
+  results_on_new_tab: false
+  advanced_search: false
+  search_on_category_select: true
+
 outgoing:
-  request_timeout: 10.0
   useragent_suffix: ""
+  request_timeout: 15.0
+  enable_http2: true
+  verify: true
+  pool_connections: 100
+  pool_maxsize: 10
+  proxies:
+      http:
+       - socks5://192.168.5.254:23456
+      https:
+       - socks5://192.168.5.254:23456
+
+categories_as_tabs:
+  general: {}
+  images: {}
+  videos: {}
+  news: {}
+  map: {}
+  music: {}
+  it: {}
+  science: {}
+  files: {}
+  social media: {}
 
 engines:
+  # ===== General - Web 搜索引擎 =====
+  # 官方 shortcut 参考: https://docs.searxng.org/user/configured_engines.html
+
   - name: google
     engine: google
-    shortcut: g
-    use_mobile_ui: false
-    proxies:
-        http:
-	    - socks5://192.168.5.254:23456
-        https:
-   	    - socks5://192.168.5.254:23456
+    shortcut: go
+    disabled: false
+    timeout: 3.0
+    weight: 1
 
   - name: bing
     engine: bing
-    shortcut: b
-
-  - name: brave
-    engine: brave
-    shortcut: br
+    shortcut: bi
+    disabled: false
+    timeout: 3.0
+    weight: 1
 
   - name: duckduckgo
     engine: duckduckgo
     shortcut: ddg
-    region: "zh-CN"
-    proxies:
-        http:
-	    - socks5://192.168.5.254:23456
-        https:
-   	    - socks5://192.168.5.254:23456
+    disabled: false
+    timeout: 3.0
+    weight: 1
 
-  - name: duckduckgo-lite
-    engine: duckduckgo
-    shortcut: ddg
-    url: https://lite.duckduckgo.com/lite/
-    timeout: 15.0
+  - name: brave
+    engine: brave
+    shortcut: br
+    disabled: false
+    timeout: 3.0
+    weight: 1
+
+  - name: startpage
+    engine: startpage
+    shortcut: sp
+    disabled: false
+    timeout: 3.0
+    weight: 1
+
+  # ===== General - 中文搜索引擎 (ZH) =====
+
+  - name: baidu
+    engine: baidu
+    shortcut: bd
+    disabled: false
+    timeout: 3.0
+    weight: 1
+
+  - name: 360search
+    engine: 360search
+    shortcut: 360so
+    disabled: false
+    timeout: 10.0
+    weight: 1
+
+  - name: sogou
+    engine: sogou
+    shortcut: sogou
+    disabled: false
+    timeout: 3.0
+    weight: 1
+
+  - name: quark
+    engine: quark
+    shortcut: qk
+    disabled: false
+    timeout: 3.0
+    weight: 1
+
+  # ===== General - 其他 =====
 
   - name: wikipedia
     engine: wikipedia
     shortcut: wp
+    disabled: false
+    timeout: 3.0
+    weight: 1
+
+  - name: wikidata
+    engine: wikidata
+    shortcut: wd
+    disabled: false
+    timeout: 3.0
+    weight: 2
+
+  - name: currency
+    engine: currency_convert
+    shortcut: cc
+    disabled: false
+    timeout: 3.0
+    weight: 100
+
+  - name: dictzone
+    engine: dictzone
+    shortcut: dc
+    disabled: false
+    timeout: 3.0
+    weight: 100
+
+  # ===== Images - 图片搜索 =====
+
+  - name: google images
+    engine: google_images
+    shortcut: goi
+    disabled: false
+    timeout: 3.0
+
+  - name: bing images
+    engine: bing_images
+    shortcut: bii
+    disabled: false
+    timeout: 3.0
+
+  - name: duckduckgo images
+    engine: duckduckgo_extra
+    shortcut: ddi
+    disabled: false
+    timeout: 3.0
+
+  - name: baidu images
+    engine: baidu
+    shortcut: bdi
+    categories: [images]
+    disabled: false
+    timeout: 3.0
+
+  - name: sogou images
+    engine: sogou_images
+    shortcut: sogoui
+    disabled: false
+    timeout: 3.0
+
+  - name: quark images
+    engine: quark
+    shortcut: qki
+    categories: [images]
+    disabled: false
+    timeout: 3.0
+
+  - name: flickr
+    engine: flickr_noapi
+    shortcut: fl
+    disabled: false
+    timeout: 3.0
+
+  - name: unsplash
+    engine: unsplash
+    shortcut: us
+    disabled: false
+    timeout: 3.0
+
+  - name: pinterest
+    engine: pinterest
+    shortcut: pin
+    disabled: false
+    timeout: 3.0
+
+  # ===== Videos - 视频搜索 =====
+
+  - name: google videos
+    engine: google_videos
+    shortcut: gov
+    disabled: false
+    timeout: 3.0
+
+  - name: bing videos
+    engine: bing_videos
+    shortcut: biv
+    disabled: false
+    timeout: 3.0
+
+  - name: duckduckgo videos
+    engine: duckduckgo_extra
+    shortcut: ddv
+    disabled: false
+    timeout: 3.0
+
+  - name: youtube
+    engine: youtube_noapi
+    shortcut: yt
+    disabled: false
+    timeout: 3.0
+
+  - name: dailymotion
+    engine: dailymotion
+    shortcut: dm
+    disabled: false
+    timeout: 3.0
+
+  - name: bilibili
+    engine: bilibili
+    shortcut: bil
+    disabled: false
+    timeout: 3.0
+
+  - name: acfun
+    engine: acfun
+    shortcut: acf
+    disabled: false
+    timeout: 3.0
+
+  - name: iqiyi
+    engine: iqiyi
+    shortcut: iq
+    disabled: false
+    timeout: 3.0
+
+  - name: sogou videos
+    engine: sogou_videos
+    shortcut: sogouv
+    disabled: false
+    timeout: 3.0
+
+  - name: sepiasearch
+    engine: sepiasearch
+    shortcut: sep
+    disabled: false
+    timeout: 3.0
+
+  - name: vimeo
+    engine: vimeo
+    shortcut: vm
+    disabled: false
+    timeout: 3.0
+
+  # ===== News - 新闻搜索 =====
+
+  - name: google news
+    engine: google_news
+    shortcut: gon
+    disabled: false
+    timeout: 3.0
+
+  - name: bing news
+    engine: bing_news
+    shortcut: bin
+    disabled: false
+    timeout: 3.0
+
+  - name: duckduckgo news
+    engine: duckduckgo_extra
+    shortcut: ddn
+    disabled: false
+    timeout: 3.0
+
+  - name: brave.news
+    engine: brave
+    shortcut: brnews
+    categories: [news]
+    disabled: false
+    timeout: 3.0
+
+  - name: yahoo news
+    engine: yahoo_news
+    shortcut: yhn
+    disabled: false
+    timeout: 3.0
+
+  - name: wikinews
+    engine: mediawiki
+    shortcut: wn
+    disabled: false
+    timeout: 3.0
+
+  - name: sogou wechat
+    engine: sogou_wechat
+    shortcut: sogouw
+    disabled: false
+    timeout: 3.0
+
+  - name: reuters
+    engine: reuters
+    shortcut: reu
+    disabled: false
+    timeout: 3.0
+
+  # ===== IT - 技术搜索 =====
+
+  - name: github
+    engine: github
+    shortcut: gh
+    disabled: false
+    timeout: 3.0
+
+  - name: stackoverflow
+    engine: stackexchange
+    shortcut: st
+    disabled: false
+    timeout: 3.0
+
+  - name: docker hub
+    engine: docker_hub
+    shortcut: dh
+    disabled: false
+    timeout: 3.0
+
+  - name: pypi
+    engine: pypi
+    shortcut: pypi
+    disabled: false
+    timeout: 3.0
+
+  - name: npm
+    engine: npm
+    shortcut: npm
+    disabled: false
+    timeout: 5.0
+
+  - name: mdn
+    engine: json_engine
+    shortcut: mdn
+    disabled: false
+    timeout: 3.0
+
+  - name: arch linux wiki
+    engine: archlinux
+    shortcut: al
+    disabled: false
+    timeout: 3.0
+
+  - name: hoogle
+    engine: xpath
+    shortcut: ho
+    disabled: false
+    timeout: 3.0
+
+  - name: mankier
+    engine: json_engine
+    shortcut: man
+    disabled: false
+    timeout: 3.0
+
+  - name: baidu kaifa
+    engine: baidu
+    shortcut: bdk
+    categories: [it]
+    disabled: false
+    timeout: 3.0
+
+  # ===== 禁用有问题的/不需要的引擎 =====
+
+  - name: radio browser
+    engine: radio_browser
+    shortcut: rb
+    disabled: true
+
+  - name: ahmia
+    engine: ahmia
+    shortcut: ah
+    disabled: true
+
+  - name: torch
+    engine: torch
+    shortcut: tc
+    disabled: true
+
+  - name: yandex
+    engine: yandex
+    shortcut: yd
+    disabled: true
+
+  - name: qwant
+    engine: qwant
+    shortcut: qw
+    disabled: true
+
+  - name: yahoo
+    engine: yahoo
+    shortcut: yh
+    disabled: true
+
+  - name: mojeek
+    engine: mojeek
+    shortcut: mjk
+    disabled: true
+
+  - name: presearch
+    engine: presearch
+    shortcut: ps
+    disabled: true
+
+languages:
+  - zh-CN
+  - zh-TW
+  - zh-HK
+  - en
+
+timezone: "Asia/Shanghai"

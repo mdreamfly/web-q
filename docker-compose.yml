@@ -6,7 +6,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+      - ./searxng/settings.yml:/etc/searxng/settings.yml
+      - ./searxng/limiter.toml:/etc/searxng/limiter.toml
     environment:
       - SEARXNG_SECRET=${SEARXNG_SECRET:-ultrasecretkey12345}
       - BIND_ADDRESS=0.0.0.0:8080
