@@ -15,7 +15,7 @@ server:
 
 search:
   safe_search: 0
-  default_lang: "zh-CN"
+  default_lang: "zh"
   formats:
     - html
     - json
@@ -32,17 +32,15 @@ ui:
   search_on_category_select: true
 
 outgoing:
-  useragent_suffix: ""
+  useragent_suffix: "Mozilla/5.0"
   request_timeout: 15.0
   enable_http2: true
   verify: true
   pool_connections: 100
   pool_maxsize: 10
-  proxies:
-      http:
-       - socks5://192.168.5.254:23456
-      https:
-       - socks5://192.168.5.254:23456
+  max_redirects: 3
+  # 不再设置全局代理，改为按引擎单独配置
+  # 海外引擎走 SOCKS5 代理，国内引擎直连
 
 categories_as_tabs:
   general: {}
@@ -57,8 +55,9 @@ categories_as_tabs:
   social media: {}
 
 engines:
-  # ===== General - Web 搜索引擎 =====
-  # 官方 shortcut 参考: https://docs.searxng.org/user/configured_engines.html
+  # =======================================================================
+  #  General - 海外 Web 搜索引擎 (需要代理)
+  # =======================================================================
 
   - name: google
     engine: google
@@ -66,13 +65,20 @@ engines:
     disabled: false
     timeout: 3.0
     weight: 1
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: bing
     engine: bing
     shortcut: bi
     disabled: false
+    base_url: https://cn.bing.com
     timeout: 3.0
     weight: 1
+
 
   - name: duckduckgo
     engine: duckduckgo
@@ -80,6 +86,12 @@ engines:
     disabled: false
     timeout: 3.0
     weight: 1
+    regions: wt_WT
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: brave
     engine: brave
@@ -87,6 +99,11 @@ engines:
     disabled: false
     timeout: 3.0
     weight: 1
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: startpage
     engine: startpage
@@ -94,8 +111,15 @@ engines:
     disabled: false
     timeout: 3.0
     weight: 1
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
-  # ===== General - 中文搜索引擎 (ZH) =====
+  # =======================================================================
+  #  General - 中文搜索引擎 (直连，不需要代理)
+  # =======================================================================
 
   - name: baidu
     engine: baidu
@@ -125,7 +149,9 @@ engines:
     timeout: 3.0
     weight: 1
 
-  # ===== General - 其他 =====
+  # =======================================================================
+  #  General - 其他 (需要代理)
+  # =======================================================================
 
   - name: wikipedia
     engine: wikipedia
@@ -133,6 +159,11 @@ engines:
     disabled: false
     timeout: 3.0
     weight: 1
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: wikidata
     engine: wikidata
@@ -140,6 +171,11 @@ engines:
     disabled: false
     timeout: 3.0
     weight: 2
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: currency
     engine: currency_convert
@@ -147,6 +183,11 @@ engines:
     disabled: false
     timeout: 3.0
     weight: 100
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: dictzone
     engine: dictzone
@@ -154,26 +195,85 @@ engines:
     disabled: false
     timeout: 3.0
     weight: 100
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
-  # ===== Images - 图片搜索 =====
+  # =======================================================================
+  #  Images - 海外图片搜索 (需要代理)
+  # =======================================================================
 
   - name: google images
     engine: google_images
     shortcut: goi
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: bing images
     engine: bing_images
     shortcut: bii
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: duckduckgo images
     engine: duckduckgo_extra
     shortcut: ddi
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  - name: flickr
+    engine: flickr_noapi
+    shortcut: fl
+    disabled: false
+    timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  - name: unsplash
+    engine: unsplash
+    shortcut: us
+    disabled: false
+    timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  - name: pinterest
+    engine: pinterest
+    shortcut: pin
+    disabled: false
+    timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  # =======================================================================
+  #  Images - 中文图片搜索 (直连)
+  # =======================================================================
 
   - name: baidu images
     engine: baidu
@@ -195,55 +295,90 @@ engines:
     disabled: false
     timeout: 3.0
 
-  - name: flickr
-    engine: flickr_noapi
-    shortcut: fl
-    disabled: false
-    timeout: 3.0
-
-  - name: unsplash
-    engine: unsplash
-    shortcut: us
-    disabled: false
-    timeout: 3.0
-
-  - name: pinterest
-    engine: pinterest
-    shortcut: pin
-    disabled: false
-    timeout: 3.0
-
-  # ===== Videos - 视频搜索 =====
+  # =======================================================================
+  #  Videos - 海外视频搜索 (需要代理)
+  # =======================================================================
 
   - name: google videos
     engine: google_videos
     shortcut: gov
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: bing videos
     engine: bing_videos
     shortcut: biv
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: duckduckgo videos
     engine: duckduckgo_extra
     shortcut: ddv
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: youtube
     engine: youtube_noapi
     shortcut: yt
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: dailymotion
     engine: dailymotion
     shortcut: dm
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  - name: sepiasearch
+    engine: sepiasearch
+    shortcut: sep
+    disabled: false
+    timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  - name: vimeo
+    engine: vimeo
+    shortcut: vm
+    disabled: false
+    timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  # =======================================================================
+  #  Videos - 中文视频搜索 (直连)
+  # =======================================================================
 
   - name: bilibili
     engine: bilibili
@@ -269,37 +404,42 @@ engines:
     disabled: false
     timeout: 3.0
 
-  - name: sepiasearch
-    engine: sepiasearch
-    shortcut: sep
-    disabled: false
-    timeout: 3.0
-
-  - name: vimeo
-    engine: vimeo
-    shortcut: vm
-    disabled: false
-    timeout: 3.0
-
-  # ===== News - 新闻搜索 =====
+  # =======================================================================
+  #  News - 海外新闻搜索 (需要代理)
+  # =======================================================================
 
   - name: google news
     engine: google_news
     shortcut: gon
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: bing news
     engine: bing_news
     shortcut: bin
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: duckduckgo news
     engine: duckduckgo_extra
     shortcut: ddn
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: brave.news
     engine: brave
@@ -307,18 +447,48 @@ engines:
     categories: [news]
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: yahoo news
     engine: yahoo_news
     shortcut: yhn
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: wikinews
     engine: mediawiki
     shortcut: wn
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  - name: reuters
+    engine: reuters
+    shortcut: reu
+    disabled: false
+    timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  # =======================================================================
+  #  News - 中文新闻搜索 (直连)
+  # =======================================================================
 
   - name: sogou wechat
     engine: sogou_wechat
@@ -326,67 +496,112 @@ engines:
     disabled: false
     timeout: 3.0
 
-  - name: reuters
-    engine: reuters
-    shortcut: reu
-    disabled: false
-    timeout: 3.0
-
-  # ===== IT - 技术搜索 =====
+  # =======================================================================
+  #  IT - 海外技术搜索 (需要代理)
+  # =======================================================================
 
   - name: github
     engine: github
     shortcut: gh
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: stackoverflow
     engine: stackexchange
     shortcut: st
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: docker hub
     engine: docker_hub
     shortcut: dh
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: pypi
     engine: pypi
     shortcut: pypi
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: npm
     engine: npm
     shortcut: npm
     disabled: false
     timeout: 5.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: mdn
     engine: json_engine
     shortcut: mdn
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: arch linux wiki
     engine: archlinux
     shortcut: al
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: hoogle
     engine: xpath
     shortcut: ho
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: mankier
     engine: json_engine
     shortcut: man
     disabled: false
     timeout: 3.0
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
+
+  # =======================================================================
+  #  IT - 中文技术搜索 (直连)
+  # =======================================================================
 
   - name: baidu kaifa
     engine: baidu
@@ -395,7 +610,9 @@ engines:
     disabled: false
     timeout: 3.0
 
-  # ===== 禁用有问题的/不需要的引擎 =====
+  # =======================================================================
+  #  禁用有问题的/不需要的引擎
+  # =======================================================================
 
   - name: radio browser
     engine: radio_browser
@@ -408,9 +625,13 @@ engines:
     disabled: true
 
   - name: torch
-    engine: torch
     shortcut: tc
-    disabled: true
+    disabled: false
+    proxies:
+      http:
+        - socks5://192.168.5.254:23456
+      https:
+        - socks5://192.168.5.254:23456
 
   - name: yandex
     engine: yandex
